@@ -33,10 +33,10 @@ The next configuration is made for an WPA2-PSK secured network, to refer other c
 Passphrase=<your password>
 ```
 
-Check the IP when the Wifi LED is grenn with: `ip addr show wlan0`.  
+You can verify you have internet by typing: `ping -c 3 google.com`.  
+To speed up the connection, reload the iwd service by command: `sudo systemctl daemon-reload`.  
+When the Wifi LED is green, Check the IP by using: `ip addr show wlan0`.  
 Then reboot the BBBlue with: `sudo reboot` and reconnect via SSH with the new IP.
-
-You can verify you have internet by typing: `ping -c 3 google.com`
 
 Install locales (a lot of programs complain otherwise) and set them:
 
