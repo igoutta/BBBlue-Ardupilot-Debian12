@@ -26,11 +26,11 @@ sudo sed -i 's/#EnableNetworkConfiguration=true/EnableNetworkConfiguration=true/
 
 The next configuration is made for an WPA2-PSK secured network, to refer other cases use the next [link](https://wiki.archlinux.org/title/Iwd).
 
-`sudo nano /var/lib/iwd/<your SSID>.psk` If the SSID contains weird symbology, read this [guide](https://www.reddit.com/r/archlinux/comments/v7k25o/comment/ice0wa4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
+`sudo nano /var/lib/iwd/<Put your SSID here>.psk` If the SSID contains weird symbology, read this [guide](https://www.reddit.com/r/archlinux/comments/v7k25o/comment/ice0wa4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
 
 ```properties
 [Security]
-Passphrase=<your password>
+Passphrase=<Put your network passwd here>
 ```
 
 You can verify you have internet by typing: `ping -c 3 google.com`.  
@@ -88,7 +88,7 @@ sudo nano /etc/default/ardupilot
 
 ```shell
 # WiFi Telemetry
-SERIAL0="-A udp:192.168.1.75:14550"
+SERIAL0="-A udp:192.168.1.75:14550" #Used my Workbook IP here
 
 # Radio Telemetry (UART1 - "UT1")
 SERIAL1="-C /dev/ttyS1"
@@ -101,7 +101,7 @@ SERIAL3="-B /dev/ttyS2"
 ```shell
 sudo mkdir -p /usr/bin/ardupilot/
 sudo wget -O /usr/bin/ardupilot/arduplane https://firmware.ardupilot.org/Plane/stable-4.4.1/blue/arduplane
-
+sudo chmod 0755 /usr/bin/ardupilot/arduplane 
 
 sudo nano /usr/bin/ardupilot/aphw
 ```
@@ -146,6 +146,16 @@ RestartSec=1
 WantedBy=multi-user.target
 
 ```
+
+```bash
+sudo systemctl enable arduplane.service
+sudo reboot
+```
+
+`sudo systemctl status arduplane.service`
+`sudo systemctl stop arduplane.service`
+`sudo systemctl start arduplane.service`
+`sudo systemctl restart arduplane.service`
 
 ### Bluetooth
 
