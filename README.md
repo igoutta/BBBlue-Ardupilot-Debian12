@@ -55,8 +55,13 @@ sudo apt install -y librobotcontrol #broken rightnow
 ```
 
 ```shell
-sudo apt install -y bbb.io-kernel-4.19-bone-rt
+sudo apt install -y bbb.io-kernel-5.10-bone-rt
+sudo apt remove -y bbb.io-kernel-5.10-ti-am335x --purge
+sudo sed -i 's/GOVERNOR="ondemand"/GOVERNOR="performance"/g' /etc/init.d/cpufrequtils
+sudo reboot
 ```
+
+`cpufreq-info`
 
 ### Devops
 
@@ -64,14 +69,15 @@ sudo apt install -y bbb.io-kernel-4.19-bone-rt
 cd /usr/local/sbin/
 sudo wget -N https://raw.githubusercontent.com/mvduin/bbb-pin-utils/master/show-pins
 sudo chmod 0755 show-pins 
-cd $HOME
-sudo show-pins | sort
+cd $HOME #Unused (Buitlin Debian 12)
 ```
+
+`sudo show-pins | sort`
 
 Chequear que:
 
 ```shell
-sudo /opt/scripts/tools/version.sh
+sudo beagle-version
 ```
 
 ## Configuracion del servicio de Ardupilot
