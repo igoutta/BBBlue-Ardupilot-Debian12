@@ -79,6 +79,8 @@ sudo reboot
 
 `cpufreq-info`
 
+#### Try 1
+
 [Built-in Overlays](https://forum.beagleboard.org/t/arm64-debian-12-x-bookworm-monthly-snapshots-2023-10-07/35565)
 
 ```sh
@@ -89,6 +91,26 @@ sudo nano /boot/uEnv.txt
 sudo sed -i 's/#uboot_overlay_addr0=<file0>.dtbo/uboot_overlay_addr0=BONE-PWM0.dtbo/g' /boot/uEnv.txt
 sudo sed -i 's/#uboot_overlay_addr1=<file1>.dtbo/uboot_overlay_addr1=BONE-PWM1.dtbo/g' /boot/uEnv.txt
 ```
+
+Fail: Only in BBIA - ARM64
+
+#### Try 2 & 3
+
+```sh
+git clone https://openbeagle.org/beagleboard/librobotcontrol.git
+cd librobotcontrol/
+make |& tee build.log
+sudo make install |& tee install.log
+```
+
+```sh
+git clone --depth=1 -b "v5.10.x-ti-unified" https://openbeagle.org/beagleboard/BeagleBoard-DeviceTrees.git
+cd BeagleBoard-DeviceTrees/
+make |& tee build.log
+sudo make install_arm |& tee install.log
+```
+
+FAIL: Doesn't reboot after installed the Overlays. librobotcontrol restarted correctly.
 
 ### Devops
 
@@ -108,6 +130,8 @@ cd $HOME #Unused (Buitl-in Debian 12)
 `lsmod | grep uio`
 
 `ls /sys/class/pwm`
+
+`find /usr /boot -type f -name "*.dtbo"`
 
 Chequear con:
 
