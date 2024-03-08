@@ -1,5 +1,8 @@
 # Instalación de Ardupilot en Beaglebone Blue con Debian 12.X (Bookworm)
 
+> [!CAUTION]
+> Actualmente no ha funcionado
+
 ## Configuración del Sistema base
 
 ### Descarga
