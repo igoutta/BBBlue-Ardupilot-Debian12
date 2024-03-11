@@ -61,6 +61,7 @@ Install locales (a lot of programs complain otherwise) and set them:
 ```sh
 sudo apt update -y
 sudo apt install -y locales
+
 ```
 
 ```sh
@@ -71,8 +72,12 @@ Choose a locale (e.g. en_US.UTF-8 = English, United States, UTF8). This may take
 
 ```sh
 sudo apt dist-upgrade -y
-sudo dpkg-reconfigure tzdata
 sudo apt install -y librobotcontrol
+
+```
+
+```sh
+sudo dpkg-reconfigure tzdata
 ```
 
 [Choose Kernel](https://forum.beagleboard.org/t/armhf-debian-10-x-11-x-12-x-kernel-updates/30928)
@@ -85,10 +90,10 @@ sudo sed -i 's|#dtb=|dtb=am335x-boneblue.dtb|g' /boot/uEnv.txt
 sudo sed -i 's|#dtb_overlay=/lib/firmware/<file8>.dtbo|dtb_overlay=/lib/firmware/BB-I2C1-00A0.dtbo\ndtb_overlay=/lib/firmware/BB-UART4-00A0.dtbo\ndtb_overlay=/lib/firmware/BB-ADC-00A0.dtbo|g' /boot/uEnv.txt
 sudo sed -i 's|uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo|#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo|g' /boot/uEnv.txt
 sudo sed -i 's|#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO-00A0.dtbo|uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO-00A0.dtbo|g' /boot/uEnv.txt
-sudo reboot
+
 ```
 
-`cpufreq-info`
+`cpufreq-info` and `sudo reboot`
 
 ### Devops
 
@@ -97,6 +102,7 @@ cd /usr/local/sbin/
 sudo wget -N https://raw.githubusercontent.com/mvduin/bbb-pin-utils/master/show-pins
 sudo chmod 0755 show-pins 
 cd $HOME
+
 ```
 
 `sudo systemctl list-units --type=service --state=active`
@@ -140,6 +146,7 @@ SERIAL3="-B /dev/ttyS2"
 sudo mkdir -p /usr/bin/ardupilot/
 sudo wget -O /usr/bin/ardupilot/arduplane https://firmware.ardupilot.org/Plane/stable-4.1.6/blue/arduplane
 sudo chmod 0755 /usr/bin/ardupilot/arduplane
+
 ```
 
 `sudo nano /usr/bin/ardupilot/aphw`
@@ -159,6 +166,7 @@ echo pruecapin_pu >| /sys/devices/platform/ocp/ocp:P8_15_pinmux/state
 ```sh
 mkdir $HOME/scripts
 sudo ln -s $HOME/scripts /scripts
+
 ```
 
 ```sh
