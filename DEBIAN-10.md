@@ -35,16 +35,15 @@ exit
 #### [Wifi](https://wiki.debian.org/WiFi/HowToUse)
 
 ```sh
-printf "[service_%s]" $(sudo connmanctl services | grep '<your SSID here>' | grep -Po 'wifi_[^ ]+') |& sudo tee /var/lib/connman/wifi.config > /dev/null
+printf "[service_%s]\n" $(sudo connmanctl services | grep '<your SSID here>' | grep -Po 'wifi_[^ ]+') |& sudo tee /var/lib/connman/wifi.config
+sudo nano /var/lib/connman/wifi.config
 ```
 
 ```sh
-cat <<EOF>> /var/lib/connman/wifi.config
 Type = wifi
 Security = wpa2
 Name = <your SSID here>
 Passphrase = <your WiFi password here>
-EOF
 ```
 
 The next configuration is made for an WPA2-PSK secured network, to refer other cases use the next [link](https://wiki.archlinux.org/title/Iwd).
@@ -61,18 +60,15 @@ Install locales (a lot of programs complain otherwise) and set them:
 ```sh
 sudo apt update -y
 sudo apt install -y locales
-
-```
-
-```sh
 sudo dpkg-reconfigure locales
+
 ```
 
 Choose a locale (e.g. en_US.UTF-8 = English, United States, UTF8). This may take a while.
 
 ```sh
-sudo apt dist-upgrade -y
 sudo apt install -y librobotcontrol
+sudo apt dist-upgrade -y
 
 ```
 
@@ -83,13 +79,17 @@ sudo dpkg-reconfigure tzdata
 [Choose Kernel](https://forum.beagleboard.org/t/armhf-debian-10-x-11-x-12-x-kernel-updates/30928)
 
 ```sh
-sudo apt install -y bbb.io-kernel-5.10-ti-rt-am335x
+sudo apt install -y bbb.io-kernel-4.19-ti-rt-am335x 
 sudo apt remove -y bbb.io-kernel-4.19-ti --purge
+sudo reboot
+```
+
+```sh
 sudo sed -i 's/GOVERNOR="ondemand"/GOVERNOR="performance"/g' /etc/init.d/cpufrequtils
 sudo sed -i 's|#dtb=|dtb=am335x-boneblue.dtb|g' /boot/uEnv.txt
-sudo sed -i 's|#dtb_overlay=/lib/firmware/<file8>.dtbo|dtb_overlay=/lib/firmware/BB-I2C1-00A0.dtbo\ndtb_overlay=/lib/firmware/BB-UART4-00A0.dtbo\ndtb_overlay=/lib/firmware/BB-ADC-00A0.dtbo|g' /boot/uEnv.txt
-sudo sed -i 's|uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo|#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo|g' /boot/uEnv.txt
-sudo sed -i 's|#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO-00A0.dtbo|uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO-00A0.dtbo|g' /boot/uEnv.txt
+sudo sed -i 's|#dtb_overlay=<file8>.dtbo|dtb_overlay=/lib/firmware/BB-I2C1-00A0.dtbo\ndtb_overlay=/lib/firmware/BB-UART4-00A0.dtbo\ndtb_overlay=/lib/firmware/BB-ADC-00A0.dtbo|g' /boot/uEnv.txt
+sudo sed -i 's|uboot_overlay_pru=AM335X-PRU-RPROC-4-19-TI-00A0.dtbo|#uboot_overlay_pru=AM335X-PRU-RPROC-4-19-TI-00A0.dtbo|g' /boot/uEnv.txt
+sudo sed -i 's|#uboot_overlay_pru=AM335X-PRU-UIO-00A0.dtbo|uboot_overlay_pru=AM335X-PRU-UIO-00A0.dtbo|g' /boot/uEnv.txt
 
 ```
 
