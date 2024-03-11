@@ -4,7 +4,7 @@
 
 ### Descarga
 
-[Snapshots usadas aquí](https://forum.beagleboard.org/t/debian-12-x-bookworm-monthly-snapshot-2023-10-07/36175)
+[Imagénes de disco usadas aquí](https://rcn-ee.net/rootfs/bb.org/testing/)
 
 ### Primer inicio y conexión SSH al sistema base
 
@@ -35,7 +35,10 @@ exit
 #### [Wifi](https://wiki.debian.org/WiFi/HowToUse)
 
 ```sh
-printf "[service_%s]" $(sudo connmanctl services | grep '<your SSID here>' | grep -Po 'wifi_[^ ]+') |& tee /var/lib/connman/wifi.config
+printf "[service_%s]" $(sudo connmanctl services | grep '<your SSID here>' | grep -Po 'wifi_[^ ]+') |& sudo tee /var/lib/connman/wifi.config > /dev/null
+```
+
+```sh
 cat <<EOF>> /var/lib/connman/wifi.config
 Type = wifi
 Security = wpa2
