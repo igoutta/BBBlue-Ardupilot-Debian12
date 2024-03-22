@@ -36,7 +36,11 @@ exit
 
 ```sh
 printf "[service_%s]\n" $(sudo connmanctl services | grep '<your SSID here>' | grep -Po 'wifi_[^ ]+') |& sudo tee /var/lib/connman/wifi.config
+```
+
+```sh
 sudo nano /var/lib/connman/wifi.config
+
 ```
 
 ```sh
@@ -46,7 +50,7 @@ Name = <your SSID here>
 Passphrase = <your WiFi password here>
 ```
 
-The next configuration is made for an WPA2-PSK secured network, to refer other cases use the next [link](https://wiki.archlinux.org/title/Iwd).
+The next configuration is made for an WPA2-PSK secured network, to refer other cases use the next [link](https://wiki.archlinux.org/title/ConnMan).
 
 You can verify you have internet by typing: `ping -c 3 google.com`.  
 To speed up the connection, reload the iwd service by command: `sudo systemctl daemon-reload`.  
@@ -60,8 +64,11 @@ Install locales (a lot of programs complain otherwise) and set them:
 ```sh
 sudo apt update -y
 sudo apt install -y locales
-sudo dpkg-reconfigure locales
 
+```
+
+```sh
+sudo dpkg-reconfigure locales
 ```
 
 Choose a locale (e.g. en_US.UTF-8 = English, United States, UTF8). This may take a while.
@@ -76,11 +83,17 @@ sudo apt dist-upgrade -y
 sudo dpkg-reconfigure tzdata
 ```
 
+Choose the closest to your location.
+
 [Choose Kernel](https://forum.beagleboard.org/t/armhf-debian-10-x-11-x-12-x-kernel-updates/30928)
 
 ```sh
+sudo apt-mark manual cryptsetup
+sudo apt purge -y cryptsetup-initramfs
+sudo apt autoremove -y
 sudo apt install -y bbb.io-kernel-4.19-ti-rt-am335x 
-sudo apt remove -y bbb.io-kernel-4.19-ti --purge
+#sudo apt install -y bbb.io-kernel-5.10-bone-rt 
+sudo apt purge -y bbb.io-kernel-4.19-ti
 sudo reboot
 ```
 
@@ -102,14 +115,16 @@ cd /usr/local/sbin/
 sudo wget -N https://raw.githubusercontent.com/mvduin/bbb-pin-utils/master/show-pins
 sudo chmod 0755 show-pins 
 cd $HOME
-
+sudo show-pins | sort
 ```
+
+Please note that if you experience an RCOutputAioPRU.cpp:SIGBUS error, there's a couple of things to try. Wiping the eMMC boot sector with `sudo dd if=/dev/zero of=/dev/mmcblk1 bs=1M count=10`.
 
 `sudo systemctl list-units --type=service --state=active`
 
 `systemctl list-unit-files --type=service --state=enabled`
 
-`sudo show-pins | sort`
+Need a 2S LiPo Battery to use the command `rc_test_servos -h` and then `sudo rc_test_servos -c 1 -w 1500`.
 
 `lsmod | grep uio`
 
@@ -149,7 +164,9 @@ sudo chmod 0755 /usr/bin/ardupilot/arduplane
 
 ```
 
-`sudo nano /usr/bin/ardupilot/aphw`
+```sh
+sudo nano /usr/bin/ardupilot/aphw
+```
 
 ```shell
 #!/bin/bash
@@ -160,10 +177,10 @@ echo 80 >| /sys/class/gpio/export
 echo out >| /sys/class/gpio/gpio80/direction
 echo 1 >| /sys/class/gpio/gpio80/value
 echo pruecapin_pu >| /sys/devices/platform/ocp/ocp:P8_15_pinmux/state
-
 ```
 
 ```sh
+sudo chmod 0755 /usr/bin/ardupilot/aphw
 mkdir $HOME/scripts
 sudo ln -s $HOME/scripts /scripts
 

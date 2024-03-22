@@ -43,7 +43,11 @@ sudo sed -i 's/#EnableNetworkConfiguration=true/EnableNetworkConfiguration=true/
 
 The next configuration is made for an WPA2-PSK secured network, to refer other cases use the next [link](https://wiki.archlinux.org/title/Iwd).
 
-`sudo nano /var/lib/iwd/<Put your SSID here>.psk` If the SSID contains weird symbology, read this [guide](https://www.reddit.com/r/archlinux/comments/v7k25o/comment/ice0wa4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
+```sh
+sudo nano /var/lib/iwd/<Put your SSID here>.psk
+```
+
+If the SSID contains weird symbology, read this [guide](https://www.reddit.com/r/archlinux/comments/v7k25o/comment/ice0wa4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
 
 ```properties
 [Security]
@@ -75,6 +79,9 @@ sudo dpkg-reconfigure tzdata
 [Choose Kernel](https://forum.beagleboard.org/t/armhf-debian-10-x-11-x-12-x-kernel-updates/30928)
 
 ```sh
+sudo apt-mark manual cryptsetup
+sudo apt purge -y cryptsetup-initramfs
+sudo apt autoremove -y
 sudo apt install -y bbb.io-kernel-5.10-ti-rt-am335x
 sudo apt remove -y bbb.io-kernel-5.10-ti-am335x --purge
 sudo sed -i 's/GOVERNOR="ondemand"/GOVERNOR="performance"/g' /etc/init.d/cpufrequtils
@@ -118,18 +125,11 @@ FAIL: Doesn't reboot after installed the Overlays. librobotcontrol restarted cor
 
 ### Devops
 
-```sh
-cd /usr/local/sbin/
-sudo wget -N https://raw.githubusercontent.com/mvduin/bbb-pin-utils/master/show-pins
-sudo chmod 0755 show-pins 
-cd $HOME #Unused (Buitl-in Debian 12)
-```
-
 `sudo systemctl list-units --type=service --state=active`
 
 `systemctl list-unit-files --type=service --state=enabled`
 
-`sudo show-pins | sort`
+Buitl-in Debian 12: `sudo show-pins | sort`
 
 `lsmod | grep uio`
 
@@ -170,7 +170,9 @@ sudo chmod 0755 /usr/bin/ardupilot/arduplane
 
 ### Outdated (Doesn´t work right now)
 
-`sudo nano /usr/bin/ardupilot/aphw`
+```sh
+sudo nano /usr/bin/ardupilot/aphw
+```
 
 ```shell
 #!/bin/bash
@@ -181,7 +183,10 @@ echo 80 >| /sys/class/gpio/export
 echo out >| /sys/class/gpio/gpio80/direction
 echo 1 >| /sys/class/gpio/gpio80/value
 echo pruecapin_pu >| /sys/devices/platform/ocp/ocp:P8_15_pinmux/state
+```
 
+```sh
+sudo chmod 0755 /usr/bin/ardupilot/a*
 ```
 
 ### Keep Going
