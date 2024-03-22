@@ -1,5 +1,8 @@
 # Instalación de Ardupilot en Beaglebone Blue con Debian 10.X (Buster)
 
+> [!WARNING]
+> Funcionó una sola vez
+
 ## Configuración del Sistema base
 
 ### Descarga
