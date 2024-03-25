@@ -9,7 +9,7 @@
 
 [Snapshots usadas aquí](https://forum.beagleboard.org/t/debian-12-x-bookworm-monthly-snapshot-2023-10-07/36175)
 
-### Primer inicio y conexión SSH al sistema base
+### Primer inicio
 
 #### Host
 
@@ -25,14 +25,6 @@ ssh-keygen -R "192.168.7.2"
 
 ```sh
 echo "debian ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers.d/debian >/dev/null
-```
-
-```sh
-sudo -s
-passwd debian
-123
-123
-exit
 ```
 
 #### [Wifi](https://wiki.debian.org/WiFi/HowToUse)
@@ -59,7 +51,7 @@ To speed up the connection, reload the iwd service by command: `sudo systemctl d
 When the Wifi LED is green, Check the IP by using: `ip addr show wlan0`.  
 Then reboot the BBBlue with: `sudo reboot` and reconnect via SSH with the new IP.
 
-#### Update System and Kernel
+### Actualizar Sistema y Kernel
 
 Install locales (a lot of programs complain otherwise) and set them:
 
@@ -76,19 +68,50 @@ sudo apt dist-upgrade -y
 sudo dpkg-reconfigure tzdata
 ```
 
-[Choose Kernel](https://forum.beagleboard.org/t/armhf-debian-10-x-11-x-12-x-kernel-updates/30928)
+#### [BBBlue Security Overwrite 2](https://elinux.org/Beagleboard:BeagleBoneBlack_Debian#i_take_full_responsibility_for_knowing_my_beagle_is_now_insecure)
+
+> [!CAUTION]
+> Se borra la contraseña del usuario debian para facilitar la entrada y el desarrollo de esta tarjeta
 
 ```sh
-sudo apt-mark manual cryptsetup
-sudo apt purge -y cryptsetup-initramfs
-sudo apt autoremove -y
+sudo sed -i -e 's|#PermitEmptyPasswords no|PermitEmptyPasswords yes|g' /etc/ssh/sshd_config
+sudo sed -i -e 's|#PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/ssh/sshd_config
+sudo sed -i -e 's|UsePAM yes|UsePAM no|g' /etc/ssh/sshd_config
+sudo passwd -d debian
+```
+
+#### [Choose Kernel](https://forum.beagleboard.org/t/armhf-debian-10-x-11-x-12-x-kernel-updates/30928)
+
+```sh
 sudo apt install -y bbb.io-kernel-5.10-ti-rt-am335x
-sudo apt remove -y bbb.io-kernel-5.10-ti-am335x --purge
-sudo sed -i 's/GOVERNOR="ondemand"/GOVERNOR="performance"/g' /etc/init.d/cpufrequtils
+sudo apt purge -y bbb.io-kernel-5.10-ti-am335x 
+sudo sed -i 's|GOVERNOR="ondemand"|GOVERNOR="performance"|g' /etc/init.d/cpufrequtils
 sudo reboot
 ```
 
 `cpufreq-info`
+
+### Devops
+
+`sudo systemctl list-units --type=service --state=active`
+
+`systemctl list-unit-files --type=service --state=enabled`
+
+Buitl-in Debian 12: `sudo show-pins | sort`
+
+`lsmod | grep uio`
+
+`ls /sys/class/pwm`
+
+`find /usr /boot -type f -name "*.dtbo"`
+
+Chequear con:
+
+```sh
+sudo beagle-version
+```
+
+### Trys
 
 #### Try 1
 
@@ -123,26 +146,6 @@ sudo make install_arm |& tee install.log
 
 FAIL: Doesn't reboot after installed the Overlays. librobotcontrol restarted correctly.
 
-### Devops
-
-`sudo systemctl list-units --type=service --state=active`
-
-`systemctl list-unit-files --type=service --state=enabled`
-
-Buitl-in Debian 12: `sudo show-pins | sort`
-
-`lsmod | grep uio`
-
-`ls /sys/class/pwm`
-
-`find /usr /boot -type f -name "*.dtbo"`
-
-Chequear con:
-
-```sh
-sudo beagle-version
-```
-
 ## Configuracion del servicio de Ardupilot
 
 ```sh
@@ -151,15 +154,13 @@ sudo nano /etc/default/ardupilot
 
 ```shell
 # WiFi Telemetry
-# Used my Workbook IP  192.168.1.75 here
-SERIAL0="-A udp:<target IP address here>:14550"
+SERIAL0="-A udp:<target IP address here>:14550" # Used my Workbook IP  192.168.1.75 here
 
 # Radio Telemetry (UART1 - "UT1")
 SERIAL1="-C /dev/ttyS1"
 
 # GPS1 (UART2 - "GPS")
 SERIAL3="-B /dev/ttyS2"
-
 ```
 
 ```sh
@@ -168,7 +169,9 @@ sudo wget -O /usr/bin/ardupilot/arduplane https://firmware.ardupilot.org/Plane/s
 sudo chmod 0755 /usr/bin/ardupilot/arduplane
 ```
 
-### Outdated (Doesn´t work right now)
+---
+> [!NOTE]
+> Outdated (Doesn´t work right now)
 
 ```sh
 sudo nano /usr/bin/ardupilot/aphw
@@ -189,7 +192,7 @@ echo pruecapin_pu >| /sys/devices/platform/ocp/ocp:P8_15_pinmux/state
 sudo chmod 0755 /usr/bin/ardupilot/a*
 ```
 
-### Keep Going
+---
 
 ```sh
 mkdir $HOME/scripts
@@ -216,7 +219,6 @@ RestartSec=1
 
 [Install]
 WantedBy=multi-user.target
-
 ```
 
 ```sh
